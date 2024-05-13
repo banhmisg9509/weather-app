@@ -42,10 +42,11 @@ const searchTerm = ref('')
 const searchTermDebounced = refDebounced(searchTerm, 500)
 
 const { data } = useGetLocation(searchTermDebounced)
-const { setLocation } = useLocationStore()
+const { setLocation, addSelectedLocation } = useLocationStore()
 
 const onSelectLocation = (location: SearchLocation) => {
   setLocation(location)
+  addSelectedLocation(location)
   searchTerm.value = ''
 }
 </script>

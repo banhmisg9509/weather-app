@@ -147,22 +147,6 @@ export interface SearchLocation {
   lon: number
 }
 
-export interface IPLookupResponse {
-  ip: string
-  type: string
-  continent_code: string
-  continent_name: string
-  country_code: string
-  country_name: string
-  is_eu: boolean
-  geoname_id: string
-  city: string
-  region: string
-  lat: number
-  lon: number
-  tz_id: string
-}
-
 export interface ForcastDay {
   codition: string
   text: string

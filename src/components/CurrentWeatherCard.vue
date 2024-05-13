@@ -1,8 +1,19 @@
 <template>
   <CurrentWeatherCardSkelaton v-if="isFetching" />
   <div v-else class="p-6 text-white bg-[rgba(0,0,0,0.3)] rounded-2xl col-span-2 md:col-span-1">
-    <p>Current Weather</p>
-    <p class="text-sm">{{ time }}</p>
+    <div class="flex justify-between">
+      <div>
+        <p>Current Weather</p>
+        <p class="text-sm">{{ time }}</p>
+      </div>
+      <div class="md:hidden">
+        <v-icon name="co-location-pin"></v-icon>
+        <span
+          >{{ locationStore.currentLocation.name }},
+          {{ locationStore.currentLocation.country }}</span
+        >
+      </div>
+    </div>
     <div class="flex flex-col justify-center">
       <div class="flex justify-center">
         <img

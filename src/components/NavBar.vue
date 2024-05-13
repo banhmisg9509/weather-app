@@ -12,7 +12,7 @@
         <SearchBar />
       </div>
       <div class="hidden md:block justify-self-end">
-        <div class="flex items-center">
+        <div class="flex items-center cursor-pointer" @click="isShowLocationList = true">
           <v-icon name="co-location-pin"></v-icon>
           <span class="md:text-lg lg:text-xl"
             >{{ locationStore.currentLocation.name }},
@@ -20,10 +20,11 @@
           >
         </div>
       </div>
-      <div class="md:hidden">
+      <div class="md:hidden cursor-pointer">
         <v-icon name="gi-hamburger-menu" scale="2"></v-icon>
       </div>
     </section>
+    <LocationList v-if="isShowLocationList" @close-modal="isShowLocationList = false" />
   </nav>
 </template>
 
@@ -31,7 +32,10 @@
 import { useLocationStore } from '@/store/locationStore'
 import { useDateFormat, useNow } from '@vueuse/core'
 import SearchBar from '@/components/SearchBar.vue'
+import LocationList from '@/components/LocationList.vue'
+import { ref } from 'vue'
 
 const date = useDateFormat(useNow(), 'ddd, DD MMM YYYY')
 const locationStore = useLocationStore()
+const isShowLocationList = ref(false)
 </script>
