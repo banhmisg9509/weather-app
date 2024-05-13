@@ -4,15 +4,27 @@
   >
     <p>Air Quality Index</p>
     <div class="grid grid-cols-2 gap-2 mt-4 flex-1">
-      <div
-        class="text-center flex flex-col items-center justify-center rounded-lg p-2"
-        v-for="aqi in airQuality"
-        :key="aqi.name"
-        :class="['bg-gradient-to-r', aqi.bgColor]"
-      >
-        <span>{{ aqi.value.toFixed(2) }}</span>
-        <span class="text-sm uppercase">{{ aqi.name }}</span>
-      </div>
+      <template v-if="isFetching">
+        <div
+          class="text-center flex flex-col items-center justify-center rounded-lg p-2 bg-gradient-to-r from-sky-700 to-sky-600 gap-1"
+          v-for="aqi in [1, 2, 3, 4, 5, 6, 7, 8]"
+          :key="aqi"
+        >
+          <span class="h-3 w-10 rounded-lg animate-pulse bg-sky-800"></span>
+          <span class="h-3 w-8 rounded-lg animate-pulse bg-sky-800"></span>
+        </div>
+      </template>
+      <template v-else>
+        <div
+          class="text-center flex flex-col items-center justify-center rounded-lg p-2"
+          v-for="aqi in airQuality"
+          :key="aqi.name"
+          :class="['bg-gradient-to-r', aqi.bgColor]"
+        >
+          <span>{{ aqi.value.toFixed(2) }}</span>
+          <span class="text-sm uppercase">{{ aqi.name }}</span>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -24,7 +36,7 @@ import { computed } from 'vue'
 
 const locationStore = useLocationStore()
 const q = computed(() => locationStore.currentLocation.name)
-const { data } = useGetForecast(q)
+const { data, isFetching } = useGetForecast(q)
 const airQuality = computed(() => {
   if (!data.value) return []
   const { air_quality } = data.value.forecast.forecastday[0].day
@@ -79,9 +91,9 @@ const getColor: Record<string, Function> = {
     return 'from-green-500 to-green-400'
   },
   'gb defra': (value: number) => {
-    if (value >= 71) return 'from-purple-500 to-purple-400'
-    if (value >= 54) return 'from-red-500 to-red-400'
-    if (value >= 36) return 'from-yellow-500 to-yellow-400'
+    if (value >= 10) return 'from-purple-500 to-purple-400'
+    if (value >= 7) return 'from-red-500 to-red-400'
+    if (value >= 4) return 'from-yellow-500 to-yellow-400'
     return 'from-green-500 to-green-400'
   },
   'us epa': (value: number) => {

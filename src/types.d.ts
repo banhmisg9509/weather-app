@@ -162,3 +162,16 @@ export interface IPLookupResponse {
   lon: number
   tz_id: string
 }
+
+export interface ForcastDay {
+  codition: string
+  text: string
+  date: string
+  maxTemp: number
+  minTemp: number
+  sunRise: string
+  sunSet: string
+  chanceOfRain: number
+  moonIllumination: number
+  moonPhaseIcon: string
+}
