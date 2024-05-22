@@ -1,5 +1,7 @@
 <template>
-  <footer class="bg-gradient-to-tr from-sky-400 to-sky-700 text-white shadow-lg p-4">
+  <footer
+    class="bg-gradient-to-tr from-sky-400 to-sky-700 text-white shadow-lg p-4 absolute bottom-0 inset-x-0"
+  >
     <div class="h-10 flex justify-center items-center">
       <a
         href="https://www.weatherapi.com/"

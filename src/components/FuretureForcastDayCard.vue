@@ -1,7 +1,7 @@
 <template>
   <div class="bg-[rgba(0,0,0,0.2)] flex flex-col items-center rounded-xl p-4">
     <p>{{ day.date }}</p>
-    <img :src="day.codition" alt="weather condition" />
+    <img :src="day.codition" alt="weather condition" width="64" height="64" />
     <p class="text-sm my-2">{{ day.text }}</p>
     <div class="rounded-full bg-gradient-to-r from-orange-500 to-green-400 w-full h-[1px]"></div>
     <div class="grid grid-cols-2 gap-2 mt-2 w-full">

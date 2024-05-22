@@ -35,7 +35,8 @@
               <span>{{ location.name }}, {{ location.country }}</span>
             </p>
             <div
-              class="text-red-600 cursor-pointer"
+              v-show="locationStore.currentLocation.name !== location.name"
+              class="text-red-600 cursor-pointer transition-colors bg-transparent hover:bg-yellow-500 rounded-md px-1"
               @click="(e) => onRemoveSelectedLocation(e, location)"
             >
               <v-icon name="md-clear-outlined"></v-icon>

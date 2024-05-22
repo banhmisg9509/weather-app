@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-[rgba(0,0,0,0.3)] rounded-2xl p-4 md:p-6 col-span-2 text-white min-w-full min-h-[350px] 2xl:max-h-[350px]"
+    class="bg-[rgba(0,0,0,0.3)] rounded-2xl p-4 md:p-6 col-span-2 text-white min-w-full min-h-[350px]"
   >
     <Line chart-id="hourly-forecast" :data="chartData" :options="chartOptions" />
   </div>
