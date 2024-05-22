@@ -20,22 +20,38 @@
           >
         </div>
       </div>
-      <div class="md:hidden cursor-pointer">
+      <div class="md:hidden cursor-pointer" @click="isShowMobileMenu = true">
         <v-icon name="gi-hamburger-menu" scale="2"></v-icon>
       </div>
     </section>
     <LocationList v-if="isShowLocationList" @close-modal="isShowLocationList = false" />
+    <MobileMenu v-if="isShowMobileMenu" @close-menu="isShowMobileMenu = false" />
   </nav>
 </template>
 
 <script setup lang="ts">
 import { useLocationStore } from '@/store/locationStore'
-import { useDateFormat, useNow } from '@vueuse/core'
+import { useDateFormat, useMediaQuery, useNow } from '@vueuse/core'
 import SearchBar from '@/components/SearchBar.vue'
 import LocationList from '@/components/LocationList.vue'
-import { ref } from 'vue'
+import MobileMenu from '@/components/MobileMenu.vue'
+import { ref, watch } from 'vue'
 
 const date = useDateFormat(useNow(), 'ddd, DD MMM YYYY')
 const locationStore = useLocationStore()
 const isShowLocationList = ref(false)
+const isShowMobileMenu = ref(false)
+
+const isMobile = useMediaQuery('(max-width: 768px)')
+
+watch(isMobile, (newVal) => {
+  if (isShowLocationList.value) {
+    isShowLocationList.value = false
+  }
+
+  // large screen
+  if (newVal === false && isShowMobileMenu.value) {
+    isShowMobileMenu.value = false
+  }
+})
 </script>
