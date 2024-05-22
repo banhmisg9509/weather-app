@@ -11,14 +11,17 @@
       <div class="w-full">
         <SearchBar />
       </div>
-      <div class="hidden md:block justify-self-end">
-        <div class="flex items-center cursor-pointer" @click="isShowLocationList = true">
-          <v-icon name="co-location-pin"></v-icon>
-          <span class="md:text-lg lg:text-xl"
-            >{{ locationStore.currentLocation.name }},
-            {{ locationStore.currentLocation.country }}</span
-          >
-        </div>
+      <div
+        class="hidden md:flex items-center cursor-pointer justify-self-end max-w-[350px]"
+        @click="isShowLocationList = true"
+      >
+        <v-icon name="co-location-pin"></v-icon>
+        <span
+          class="md:text-lg lg:text-xl truncate"
+          :title="`${locationStore.currentLocation.name}, ${locationStore.currentLocation.country}`"
+          >{{ locationStore.currentLocation.name }},
+          {{ locationStore.currentLocation.country }}</span
+        >
       </div>
       <div class="md:hidden cursor-pointer" @click="isShowMobileMenu = true">
         <v-icon name="gi-hamburger-menu" scale="2"></v-icon>

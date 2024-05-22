@@ -7,7 +7,8 @@ export const getForecast = async (q: string, days: number = 6) => {
     params: {
       q,
       days,
-      aqi: 'yes'
+      aqi: 'yes',
+      alerts: 'yes'
     }
   })
 

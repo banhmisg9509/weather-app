@@ -36,7 +36,7 @@ import { useGetLocation } from '@/composables/useGetLocation'
 import { useLocationStore } from '@/store/locationStore'
 import type { SearchLocation } from '@/types'
 import { refDebounced } from '@vueuse/core'
-import { ref } from 'vue'
+import { toRaw, ref } from 'vue'
 
 const searchTerm = ref('')
 const searchTermDebounced = refDebounced(searchTerm, 500)
@@ -44,7 +44,16 @@ const searchTermDebounced = refDebounced(searchTerm, 500)
 const { data } = useGetLocation(searchTermDebounced)
 const { setLocation, addSelectedLocation } = useLocationStore()
 
+const shortCountryName = (location: SearchLocation, countries: Record<string, string>) => {
+  location = toRaw(location)
+  if (countries[location.country]) {
+    location.country = countries[location.country]
+  }
+  return location
+}
+
 const onSelectLocation = (location: SearchLocation) => {
+  location = shortCountryName(location, { 'United States of America': 'USA' })
   setLocation(location)
   addSelectedLocation(location)
   searchTerm.value = ''

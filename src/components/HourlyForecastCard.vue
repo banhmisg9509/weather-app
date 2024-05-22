@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-[rgba(0,0,0,0.3)] rounded-2xl p-4 md:p-6 col-span-2 text-white min-w-full 2xl:max-h-[350px]"
+    class="bg-[rgba(0,0,0,0.3)] rounded-2xl p-4 md:p-6 col-span-2 text-white min-w-full min-h-[350px] 2xl:max-h-[350px]"
   >
     <Line chart-id="hourly-forecast" :data="chartData" :options="chartOptions" />
   </div>
@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import { useGetForecast } from '@/composables/useGetForecast'
 import type { ChartData, ChartOptions } from 'chart.js'
-import { computed, ref, watch } from 'vue'
+import { computed, shallowRef, watch } from 'vue'
 import { Line } from 'vue-chartjs'
 
 import { useLocationStore } from '@/store/locationStore'
@@ -26,11 +26,11 @@ const locationStore = useLocationStore()
 const q = computed(() => locationStore.currentLocation.name)
 const { data } = useGetForecast(q)
 
-const chartData = ref<ChartData<'line'>>({
+const chartData = shallowRef<ChartData<'line'>>({
   datasets: []
 })
 
-const chartOptions = ref<ChartOptions<'line'>>({
+const chartOptions = shallowRef<ChartOptions<'line'>>({
   maintainAspectRatio: false,
   scales: {
     x: {
