@@ -18,7 +18,7 @@
       <div class="flex justify-center">
         <img
           class="scale-125"
-          :src="`https://${currentWeather?.condition.icon}`"
+          :src="`https:${currentWeather?.condition.icon}`"
           alt="condition icon"
           width="80"
           height="80"

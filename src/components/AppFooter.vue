@@ -15,6 +15,8 @@
           class="hidden md:inline-block"
           src="//cdn.weatherapi.com/v4/images/weatherapi_logo.png"
           alt="Weather data by WeatherAPI.com"
+          width="107"
+          height="50"
       /></a>
     </div>
   </footer>

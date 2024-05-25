@@ -8,7 +8,7 @@
     </div>
     <div class="flex flex-col justify-center gap-2">
       <div class="flex justify-center">
-        <div class="w-16 h-16 rounded-full bg-sky-800 animate-pulse"></div>
+        <div class="w-20 h-20 rounded-full bg-sky-800 animate-pulse"></div>
       </div>
       <div class="flex flex-col items-center w-full gap-2">
         <p class="relative h-12 w-12 rounded-lg bg-sky-800 animate-pulse">

@@ -16,6 +16,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@fontsource/poppins": "^5.0.14",
     "@tanstack/vue-query": "^5.32.1",
     "@vueuse/core": "^10.9.0",
     "axios": "^1.6.8",

@@ -32,7 +32,7 @@ const forecastday = computed(() => {
 
   return data.value.forecast.forecastday.map((day) => {
     return {
-      codition: 'https://' + day.day.condition.icon,
+      codition: 'https:' + day.day.condition.icon,
       text: day.day.condition.text,
       date: useDateFormat(new Date(day.date), 'ddd, DD MMM').value,
       maxTemp: day.day.maxtemp_c,
