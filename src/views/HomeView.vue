@@ -8,8 +8,10 @@
 </template>
 
 <script setup lang="ts">
-import CurrentWeatherCard from '@/components/CurrentWeatherCard.vue'
-import HourlyForecastCard from '@/components/HourlyForecastCard.vue'
-import AirQualityCard from '@/components/AirQualityCard.vue'
-import FutureForecastCard from '@/components/FutureForecastCard.vue'
+import { defineAsyncComponent } from 'vue'
+
+const CurrentWeatherCard = defineAsyncComponent(() => import('@/components/CurrentWeatherCard.vue'))
+const AirQualityCard = defineAsyncComponent(() => import('@/components/AirQualityCard.vue'))
+const FutureForecastCard = defineAsyncComponent(() => import('@/components/FutureForecastCard.vue'))
+const HourlyForecastCard = defineAsyncComponent(() => import('@/components/HourlyForecastCard.vue'))
 </script>

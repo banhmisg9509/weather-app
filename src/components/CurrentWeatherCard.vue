@@ -1,6 +1,9 @@
 <template>
   <CurrentWeatherCardSkelaton v-if="isFetching" />
-  <div v-else class="p-6 text-white bg-[rgba(0,0,0,0.3)] rounded-2xl col-span-2 md:col-span-1">
+  <div
+    v-else
+    class="p-6 text-white bg-[rgba(0,0,0,0.3)] rounded-2xl col-span-2 md:col-span-1 flex flex-col"
+  >
     <div class="flex justify-between">
       <div>
         <p>Current Weather</p>
@@ -14,27 +17,26 @@
         >
       </div>
     </div>
-    <div class="flex flex-col justify-center">
+    <div class="flex flex-col justify-center flex-1">
       <div class="flex justify-center">
         <img
-          class="scale-125"
           :src="`https:${currentWeather?.condition.icon}`"
           alt="condition icon"
-          width="80"
-          height="80"
+          width="64"
+          height="64"
         />
       </div>
       <div class="text-center">
-        <p class="text-5xl relative font-bold">
+        <p class="text-4xl relative font-bold">
           {{ currentWeather?.temp_c }}
           <span class="text-base absolute top-1">&#176;C</span>
         </p>
         <p>{{ currentWeather?.condition.text }}</p>
-        <p class="text-sm">
+        <p>
           Feels like: <span>{{ currentWeather?.feelslike_c }}&#176;C</span>
         </p>
       </div>
-      <div class="grid grid-cols-3 gap-2 mt-4 text-sm">
+      <div class="grid grid-cols-3 gap-2 mt-4 text-sm lg:text-base place-items-center flex-1">
         <div class="flex flex-col items-center text-center">
           <v-icon name="wi-humidity"></v-icon>
           <span>{{ currentWeather?.humidity }}%</span>
@@ -58,7 +60,7 @@
         <div class="flex flex-col items-center text-center">
           <v-icon
             name="io-navigate"
-            :class="`rotate-[calc(-45deg+${currentWeather?.wind_degree}deg)]`"
+            :style="{ transform: `rotate(${(currentWeather?.wind_degree || 0) - 45}deg)` }"
           ></v-icon>
           <span>{{ currentWeather?.wind_degree }}&#176;</span>
         </div>
