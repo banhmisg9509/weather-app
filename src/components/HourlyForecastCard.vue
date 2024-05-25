@@ -110,7 +110,7 @@ const chartOptions = shallowRef<ChartOptions<'line'>>({
       },
       ticks: {
         callback: function (val, index) {
-          return index % 2 === 0 ? this.getLabelForValue(val as number) : ''
+          return index % 2 === 1 ? '' : this.getLabelForValue(val as number)
         },
         autoSkip: false
       }
