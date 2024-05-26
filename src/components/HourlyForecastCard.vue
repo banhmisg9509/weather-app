@@ -2,15 +2,20 @@
   <div
     class="bg-[rgba(0,0,0,0.3)] rounded-2xl p-4 md:p-6 col-span-2 text-white min-w-full min-h-[350px]"
   >
-    <Line chart-id="hourly-forecast" :data="chartData" :options="chartOptions" />
+    <Line
+      chart-id="hourly-forecast"
+      :data="chartData"
+      :options="chartOptions"
+      ref="chartInstance"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useGetForecast } from '@/composables/useGetForecast'
 import type { ChartData, ChartOptions } from 'chart.js'
-import { computed, shallowRef } from 'vue'
-import { Line } from 'vue-chartjs'
+import { computed, ref, shallowRef, watchEffect } from 'vue'
+import { Line, type ChartComponentRef } from 'vue-chartjs'
 
 import { useLocationStore } from '@/store/locationStore'
 import {
@@ -26,7 +31,8 @@ import {
   Title,
   Tooltip
 } from 'chart.js'
-import annotationPlugin from 'chartjs-plugin-annotation'
+import annotationPlugin, { type AnnotationOptions } from 'chartjs-plugin-annotation'
+import chartDataLabels from 'chartjs-plugin-datalabels'
 
 import type { HourlyForecast } from '@/types'
 Chart.register(
@@ -40,7 +46,8 @@ Chart.register(
   Tooltip,
   Title,
   Filler,
-  annotationPlugin
+  annotationPlugin,
+  chartDataLabels
 )
 Chart.defaults.color = '#fff'
 Chart.defaults.borderColor = '#fff'
@@ -52,6 +59,8 @@ Chart.defaults.font = {
 const locationStore = useLocationStore()
 const q = computed(() => locationStore.currentLocation.name)
 const { data } = useGetForecast(q)
+
+const chartInstance = ref<ChartComponentRef>()
 
 const chartData = computed<ChartData<'line'>>(() => {
   if (!data.value) {
@@ -72,10 +81,10 @@ const chartData = computed<ChartData<'line'>>(() => {
       {
         data: forecastHour.map((item) => item.temp_c),
         label: 'Temperature',
-        borderColor: 'orange',
-        borderDash: [2, 2],
-        pointBackgroundColor: 'transparent',
-        backgroundColor: (context: any) => {
+        borderWidth: 1,
+        borderColor: 'skyblue',
+        pointStyle: false,
+        backgroundColor: (context) => {
           if (!context.chart.chartArea) {
             return
           }
@@ -95,7 +104,20 @@ const chartData = computed<ChartData<'line'>>(() => {
           return gradientBg
         },
         yAxisID: 'y',
-        fill: true
+        fill: true,
+        datalabels: {
+          color: 'white',
+          align: 'end',
+          font: (context) => {
+            var w = context.chart.width
+            return {
+              size: w < 512 ? 12 : 14
+            }
+          },
+          formatter: (value, context) => {
+            return context.dataIndex % 2 === 1 ? '' : value + '°'
+          }
+        }
       }
     ]
   }
@@ -112,12 +134,18 @@ const chartOptions = shallowRef<ChartOptions<'line'>>({
         callback: function (val, index) {
           return index % 2 === 1 ? '' : this.getLabelForValue(val as number)
         },
-        autoSkip: false
+        autoSkip: false,
+        font: (context) => {
+          var w = context.chart.width
+          return {
+            size: w < 512 ? 12 : 14
+          }
+        }
       }
     },
     y: {
       type: 'linear',
-      display: true,
+      display: false,
       position: 'left',
       grid: {
         display: false
@@ -147,26 +175,80 @@ const chartOptions = shallowRef<ChartOptions<'line'>>({
     },
     annotation: {
       annotations: {
-        dayDivide: {
+        dayDevide: {
           borderWidth: 1,
           borderDash: [3, 3],
           type: 'line',
           value: '00:00',
-          scaleID: 'x',
-          label: {
-            display: true,
-            content: new Date().toLocaleDateString(),
-            position: 'start',
-            backgroundColor: 'rgba(0,0,0,0.1)',
-            padding: 6,
-            font: {
-              size: 12
-            }
+          scaleID: 'x'
+        },
+        today: {
+          type: 'label',
+          content: new Date().toLocaleDateString('vi'),
+          rotation: -90,
+          xValue: '00:00',
+          xAdjust: -10,
+          yAdjust: -90,
+          color: 'white',
+          font: {
+            size: 12
+          }
+        },
+        tomorrow: {
+          type: 'label',
+          content: new Date(new Date().getTime() + 24 * 3600 * 1000).toLocaleDateString('vi'),
+          rotation: -90,
+          xValue: '00:00',
+          xAdjust: 11,
+          yAdjust: -90,
+          color: 'white',
+          font: {
+            size: 12
           }
         }
       }
     }
   },
   resizeDelay: 300
+})
+
+watchEffect(() => {
+  if (!chartInstance.value || !data.value) return
+
+  const offset = new Date().getHours()
+  const forecastHour = data.value.forecast.forecastday
+    .slice(0, 2)
+    .reduce((hours, day) => hours.concat(day.hour), [] as HourlyForecast[])
+    .slice(offset, offset + 24)
+
+  const conditions: AnnotationOptions[] = []
+  forecastHour.forEach((item, index) => {
+    if (index % 2 === 0) {
+      const img = new Image()
+      img.src = 'https:' + item.condition.icon
+      img.width = 30
+      img.height = 30
+
+      conditions.push({
+        id: `image-annotation-${index}`,
+        type: 'label',
+        xValue: item.time.split(' ').pop(),
+        yValue: item.temp_c,
+        content: () => img,
+        width: 30,
+        height: 30,
+        xAdjust: 10
+      })
+    }
+  })
+
+  if (chartInstance.value.chart?.options.plugins?.annotation) {
+    chartInstance.value.chart.options.plugins.annotation.annotations = {
+      ...chartOptions.value.plugins?.annotation?.annotations,
+      ...Object.fromEntries(conditions.map((anno) => [anno.id, anno]))
+    }
+  }
+
+  chartInstance.value.chart?.update()
 })
 </script>
