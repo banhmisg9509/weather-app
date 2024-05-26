@@ -134,7 +134,6 @@ const chartOptions = shallowRef<ChartOptions<'line'>>({
         callback: function (val, index) {
           return index % 2 === 1 ? '' : this.getLabelForValue(val as number)
         },
-        autoSkip: false,
         font: (context) => {
           var w = context.chart.width
           return {
@@ -206,7 +205,8 @@ const chartOptions = shallowRef<ChartOptions<'line'>>({
             size: 12
           }
         }
-      }
+      },
+      clip: false
     }
   },
   resizeDelay: 300
@@ -224,20 +224,17 @@ watchEffect(() => {
   const conditions: AnnotationOptions[] = []
   forecastHour.forEach((item, index) => {
     if (index % 2 === 0) {
-      const img = new Image()
+      const img = new Image(30, 30)
       img.src = 'https:' + item.condition.icon
-      img.width = 30
-      img.height = 30
 
       conditions.push({
         id: `image-annotation-${index}`,
         type: 'label',
         xValue: item.time.split(' ').pop(),
         yValue: item.temp_c,
-        content: () => img,
+        content: img,
         width: 30,
-        height: 30,
-        xAdjust: 10
+        height: 30
       })
     }
   })
@@ -245,10 +242,8 @@ watchEffect(() => {
   if (chartInstance.value.chart?.options.plugins?.annotation) {
     chartInstance.value.chart.options.plugins.annotation.annotations = {
       ...chartOptions.value.plugins?.annotation?.annotations,
-      ...Object.fromEntries(conditions.map((anno) => [anno.id, anno]))
+      ...conditions
     }
   }
-
-  chartInstance.value.chart?.update()
 })
 </script>
