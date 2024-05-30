@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { useGetForecast } from '@/composables/useGetForecast'
 import type { ChartData, ChartOptions } from 'chart.js'
-import { computed, ref, shallowRef, watchEffect } from 'vue'
+import { computed, ref, shallowReactive, watchEffect } from 'vue'
 import { Line, type ChartComponentRef } from 'vue-chartjs'
 
 import { useLocationStore } from '@/store/locationStore'
@@ -56,33 +56,38 @@ Chart.defaults.font = {
   size: 14
 }
 
+const ONE_DAY = 86_400_000
+
 const locationStore = useLocationStore()
 const q = computed(() => locationStore.currentLocation.name)
 const { data } = useGetForecast(q)
 
 const chartInstance = ref<ChartComponentRef>()
 
+const forecastHour = computed(() => {
+  if (!data.value) return []
+
+  const offset = new Date().getHours()
+  return data.value.forecast.forecastday
+    .slice(0, 2)
+    .reduce((hours, day) => hours.concat(day.hour), [] as HourlyForecast[])
+    .slice(offset, offset + 24)
+})
+
 const chartData = computed<ChartData<'line'>>(() => {
-  if (!data.value) {
+  if (forecastHour.value.length === 0) {
     return {
       datasets: []
     }
   }
 
-  const offset = new Date().getHours()
-  const forecastHour = data.value.forecast.forecastday
-    .slice(0, 2)
-    .reduce((hours, day) => hours.concat(day.hour), [] as HourlyForecast[])
-    .slice(offset, offset + 24)
-
   return {
-    labels: forecastHour.map((item) => item.time.split(' ').pop()),
+    labels: forecastHour.value.map((item) => item.time.split(' ').pop()),
     datasets: [
       {
-        data: forecastHour.map((item) => item.temp_c),
+        data: forecastHour.value.map((item) => item.temp_c),
         label: 'Temperature',
         borderWidth: 1,
-        borderColor: 'skyblue',
         pointStyle: false,
         backgroundColor: (context) => {
           if (!context.chart.chartArea) {
@@ -123,7 +128,7 @@ const chartData = computed<ChartData<'line'>>(() => {
   }
 })
 
-const chartOptions = shallowRef<ChartOptions<'line'>>({
+const chartOptions = shallowReactive<ChartOptions<'line'>>({
   maintainAspectRatio: false,
   scales: {
     x: {
@@ -195,10 +200,10 @@ const chartOptions = shallowRef<ChartOptions<'line'>>({
         },
         tomorrow: {
           type: 'label',
-          content: new Date(new Date().getTime() + 24 * 3600 * 1000).toLocaleDateString('vi'),
+          content: new Date(new Date().getTime() + ONE_DAY).toLocaleDateString('vi'),
           rotation: -90,
           xValue: '00:00',
-          xAdjust: 11,
+          xAdjust: 10,
           yAdjust: -90,
           color: 'white',
           font: {
@@ -213,22 +218,15 @@ const chartOptions = shallowRef<ChartOptions<'line'>>({
 })
 
 watchEffect(() => {
-  if (!chartInstance.value || !data.value) return
-
-  const offset = new Date().getHours()
-  const forecastHour = data.value.forecast.forecastday
-    .slice(0, 2)
-    .reduce((hours, day) => hours.concat(day.hour), [] as HourlyForecast[])
-    .slice(offset, offset + 24)
+  if (!chartInstance.value || forecastHour.value.length === 0) return
 
   const conditions: AnnotationOptions[] = []
-  forecastHour.forEach((item, index) => {
+  forecastHour.value.forEach((item, index) => {
     if (index % 2 === 0) {
       const img = new Image(30, 30)
       img.src = 'https:' + item.condition.icon
 
       conditions.push({
-        id: `image-annotation-${index}`,
         type: 'label',
         xValue: item.time.split(' ').pop(),
         yValue: item.temp_c,
@@ -241,7 +239,7 @@ watchEffect(() => {
 
   if (chartInstance.value.chart?.options.plugins?.annotation) {
     chartInstance.value.chart.options.plugins.annotation.annotations = {
-      ...chartOptions.value.plugins?.annotation?.annotations,
+      ...chartOptions.plugins?.annotation?.annotations,
       ...conditions
     }
   }

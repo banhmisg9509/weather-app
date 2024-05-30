@@ -19,7 +19,6 @@
     "@fontsource/poppins": "^5.0.14",
     "@tanstack/vue-query": "^5.32.1",
     "@vueuse/core": "^10.9.0",
-    "axios": "^1.6.8",
     "chart.js": "^4.4.2",
     "chartjs-plugin-annotation": "^3.0.1",
     "chartjs-plugin-datalabels": "^2.2.0",

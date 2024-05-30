@@ -1,27 +1,21 @@
-import { client } from '@/includes/axiosClient'
+import { fetchWithParams } from '@/includes/httpClient'
 import type { SearchLocation, WeatherResponse } from '@/types'
 
-export const getForecast = async (q: string, days: number = 6) => {
+export const getForecast = async (q: string, days: number = 6): Promise<WeatherResponse> => {
   const path = '/forecast.json'
-  const { data } = await client.get<WeatherResponse>(path, {
-    params: {
-      q,
-      days,
-      aqi: 'yes',
-      alerts: 'yes'
-    }
-  })
+  const params = {
+    q,
+    days,
+    aqi: 'yes',
+    alerts: 'yes'
+  }
 
-  return data
+  return await fetchWithParams<WeatherResponse>(path, params)
 }
 
-export const getLocation = async (q: string) => {
+export const getLocation = async (q: string): Promise<SearchLocation[]> => {
   const path = '/search.json'
-  const { data } = await client.get<SearchLocation[]>(path, {
-    params: {
-      q
-    }
-  })
+  const params = { q }
 
-  return data
+  return await fetchWithParams<SearchLocation[]>(path, params)
 }

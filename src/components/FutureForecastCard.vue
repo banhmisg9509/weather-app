@@ -5,7 +5,7 @@
       class="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-[repeat(auto-fit,minmax(128px,1fr))] gap-2 mt-4"
     >
       <template v-if="isFetching">
-        <FuretureForcastDayCardSkelaton v-for="index in [1, 2, 3, 4, 5, 6]" :key="index" />
+        <FuretureForcastDayCardSkelaton v-for="index in range(6)" :key="index" />
       </template>
       <template v-else>
         <FuretureForcastDayCard v-for="day in forecastday" :key="day.text" :day="day" />
@@ -18,6 +18,7 @@
 import FuretureForcastDayCard from '@/components/FuretureForcastDayCard.vue'
 import FuretureForcastDayCardSkelaton from '@/components/FuretureForcastDayCardSkelaton.vue'
 import { useGetForecast } from '@/composables/useGetForecast'
+import { range } from '@/includes/utils'
 import { useLocationStore } from '@/store/locationStore'
 import type { ForcastDay } from '@/types'
 import { useDateFormat } from '@vueuse/core'
@@ -58,16 +59,6 @@ const getMoonPhaseIcon: Record<string, string> = {
 }
 
 const convert12HourTo24Hour = (time12h: string) => {
-  const [time, period] = time12h.split(' ')
-  const [hours, minutes] = time
-    .split(':')
-    .map((num, index) =>
-      index === 0
-        ? (parseInt(num) + (period.toUpperCase() === 'PM' && parseInt(num) !== 12 ? 12 : 0))
-            .toString()
-            .padStart(2, '0')
-        : num
-    )
-  return `${hours}:${minutes}`
+  return useDateFormat(new Date(new Date().toLocaleDateString() + ' ' + time12h), 'HH:mm').value
 }
 </script>

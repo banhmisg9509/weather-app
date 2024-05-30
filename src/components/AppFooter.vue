@@ -6,13 +6,13 @@
       <a
         href="https://www.weatherapi.com/"
         title="Free Weather API"
-        class="inline-flex items-center gap-2"
+        class="inline-flex items-center"
         target="_blank"
         rel="noopener noreferrer"
       >
         Powered by WeatherAPI.com
         <img
-          class="hidden md:inline-block"
+          class="hidden md:inline-block scale-75"
           src="//cdn.weatherapi.com/v4/images/weatherapi_logo.png"
           alt="Weather data by WeatherAPI.com"
           width="107"
