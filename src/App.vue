@@ -2,6 +2,7 @@
 import { RouterView } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
 import AppFooter from './components/AppFooter.vue'
+import { SpeedInsights } from '@vercel/speed-insights/vue'
 </script>
 
 <template>
@@ -11,5 +12,6 @@ import AppFooter from './components/AppFooter.vue'
     <NavBar />
     <RouterView />
     <AppFooter />
+    <SpeedInsights />
   </main>
 </template>
