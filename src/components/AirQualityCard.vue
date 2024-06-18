@@ -41,7 +41,7 @@ const { data, isFetching } = useGetForecast(q)
 const airQuality = computed(() => {
   if (!data.value) return []
 
-  const { air_quality } = data.value.forecast.forecastday[0].day
+  const { air_quality } = data.value.current
   return Object.entries(air_quality).map(([key, value]) => {
     return {
       key,
